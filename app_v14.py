@@ -654,16 +654,21 @@ by Clarity Health Advisors
 </div>
 
 <div class="nav-label">
-OVERVIEW
+LEADERSHIP
 </div>
 
 <button class="nav-btn" data-view="dashboard">
-Executive Dashboard
+Executive Command Center
 </button>
 
+
+<div class="nav-label">
+OPERATIONS
+</div>
+
+
 <button class="nav-btn active" data-view="workspace">
-Staff Workspace
-</button>
+</button> Operations Workspace
 
 <div class="nav-label">
 REVENUE RECOVERY
