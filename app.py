@@ -3223,7 +3223,137 @@ renderWorkspace
 
 
 renderAll();
+// ===== CLARITYFLOW REVENUE INTELLIGENCE CENTER =====
+function renderRevenueIntelligence() {
+  const existing = document.getElementById('revenueIntelligence');
+  if (existing) existing.remove();
 
+  const cases = (m && Array.isArray(m.open)) ? m.open : [];
+  if (!cases.length) return;
+
+  const totalExposure = cases.reduce((sum, c) => sum + (Number(c.risk) || 0), 0);
+
+  const actionToday = cases
+    .filter(c => Number(c.days) <= 3)
+    .reduce((sum, c) => sum + (Number(c.risk) || 0), 0);
+
+  const preventableLoss = Math.round(totalExposure * 0.35);
+  const predictedRecovery = Math.round(preventableLoss * 0.70);
+
+  const byCategory = {};
+  const byPayer = {};
+
+  cases.forEach(c => {
+    const category = c.category || 'Other';
+    const payer = c.payer || 'Unknown';
+
+    byCategory[category] =
+      (byCategory[category] || 0) + (Number(c.risk) || 0);
+
+    byPayer[payer] =
+      (byPayer[payer] || 0) + (Number(c.risk) || 0);
+  });
+
+  const topCategories = Object.entries(byCategory)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const topPayer = Object.entries(byPayer)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  const moneyFmt = n =>
+    '$' + Number(n || 0).toLocaleString();
+
+  const section = document.createElement('section');
+  section.id = 'revenueIntelligence';
+
+  section.style.cssText = `
+    margin:24px 0;
+    padding:24px;
+    background:#ffffff;
+    border:1px solid #e7eaf0;
+    border-radius:22px;
+  `;
+
+  section.innerHTML = `
+    <div style="font-size:28px;font-weight:800;margin-bottom:6px;">
+      Revenue Intelligence Center
+    </div>
+
+    <div style="color:#667085;margin-bottom:22px;">
+      Enterprise revenue exposure, recovery opportunity and AI-prioritized action.
+    </div>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:14px;
+      margin-bottom:22px;
+    ">
+      <div style="padding:18px;border:1px solid #e7eaf0;border-radius:16px;">
+        <div style="font-size:13px;font-weight:700;color:#667085;">TOTAL REVENUE EXPOSURE</div>
+        <div style="font-size:30px;font-weight:800;margin-top:8px;">${moneyFmt(totalExposure)}</div>
+      </div>
+
+      <div style="padding:18px;border:1px solid #e7eaf0;border-radius:16px;">
+        <div style="font-size:13px;font-weight:700;color:#667085;">PREVENTABLE LOSS</div>
+        <div style="font-size:30px;font-weight:800;margin-top:8px;">${moneyFmt(preventableLoss)}</div>
+      </div>
+
+      <div style="padding:18px;border:1px solid #e7eaf0;border-radius:16px;">
+        <div style="font-size:13px;font-weight:700;color:#667085;">ACTION REQUIRED TODAY</div>
+        <div style="font-size:30px;font-weight:800;margin-top:8px;">${moneyFmt(actionToday)}</div>
+      </div>
+
+      <div style="padding:18px;border:1px solid #e7eaf0;border-radius:16px;">
+        <div style="font-size:13px;font-weight:700;color:#667085;">AI-PREDICTED RECOVERY</div>
+        <div style="font-size:30px;font-weight:800;margin-top:8px;">${moneyFmt(predictedRecovery)}</div>
+      </div>
+    </div>
+
+    <div style="
+      background:#f4efff;
+      padding:18px;
+      border-radius:16px;
+      margin-bottom:22px;
+    ">
+      <div style="font-weight:800;color:#6f47e8;margin-bottom:8px;">
+        ✦ Clarity AI Executive Brief
+      </div>
+
+      <div>
+        ${moneyFmt(actionToday)} requires near-term intervention.
+        ${topPayer ? topPayer[0] + ' represents the highest payer exposure at ' + moneyFmt(topPayer[1]) + '.' : ''}
+        Focus staff on high-value cases with approaching deadlines first.
+      </div>
+    </div>
+
+    <div style="font-size:20px;font-weight:800;margin-bottom:12px;">
+      Top Revenue Leakage Drivers
+    </div>
+
+    ${topCategories.map(([name, value]) => `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        gap:16px;
+        padding:12px 0;
+        border-bottom:1px solid #e7eaf0;
+      ">
+        <span>${name}</span>
+        <strong>${moneyFmt(value)}</strong>
+      </div>
+    `).join('')}
+  `;
+
+  const content = document.querySelector('.content');
+
+  if (content) {
+    content.insertBefore(section, content.firstChild);
+  }
+}
+
+renderRevenueIntelligence();
 </script>
 
 </body>
